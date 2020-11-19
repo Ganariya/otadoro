@@ -1,7 +1,8 @@
 require('dotenv').config()
 require('electron-reload')(__dirname);
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, Tray, Menu} = require('electron')
 const Store = require('electron-store')
+// const menubar = require('menubar').menubar()
 const twitterAPI = require('node-twitter-api')
 const twitter = new twitterAPI({
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
@@ -9,9 +10,15 @@ const twitter = new twitterAPI({
     callback: 'https://www.google.co.jp/'
 })
 const store = new Store();
+// const pomodoroUnitMinuts = 25 * 60;
+const pomodoroUnitMinuts = 4;
 
 let twitterAccessToken;
 let twitterAccessTokenSecret;
+let tray;
+let remainTime = 0;
+let intervalTimerID;
+let otadoroWin;
 
 function twitterAPIWindow() {
     const win = new BrowserWindow({
@@ -41,27 +48,74 @@ function twitterAPIWindow() {
     })
 }
 
-function anidoroWindow() {
-    const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+function otadoroWindow() {
+    const {screen} = require('electron')
+    const {width, height} = screen.getPrimaryDisplay().workAreaSize;
+    otadoroWin = new BrowserWindow({
+        width: width,
+        height: height,
+        transparent: true,
+        frame: false,
+        resizable: false,
+        alwaysOnTop: true,
         webPreferences: {
             nodeIntegration: true,
-            enableRemoteModule: true
+            enableRemoteModule: true,
         }
     })
-    win.loadURL('index.html')
+    otadoroWin.setIgnoreMouseEvents(true)
+    otadoroWin.loadFile('index.html')
 }
 
-function initWindow() {
+function startTimer() {
+    remainTime = pomodoroUnitMinuts;
+    setInterval(() => {
+        remainTime--;
+        if (remainTime < 0) {
+            clearInterval(intervalTimerID)
+            if (otadoroWin) {
+                // otadoroWin.setIgnoreMouseEvents(false)
+                otadoroWin.maximize()
+                otadoroWin.focus()
+
+            }
+        }
+    }, 1000);
+}
+
+function initTray() {
+    tray = new Tray('ganariya_2.png')
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Start', click: startTimer
+        },
+        {
+            label: 'Stop', click: () => {
+
+            }
+        },
+    ])
+    tray.setContextMenu(contextMenu)
+    tray.setTitle('25:00')
+    tray.setIgnoreDoubleClickEvents(true)
+    intervalTimerID = setInterval(() => {
+        const minutes = Math.floor(remainTime / 60);
+        const seconds = remainTime % 60;
+        const newText = ("00" + minutes).slice(-2) + ":" + ("00" + seconds).slice(-2);
+        tray.setTitle(newText)
+    }, 1000);
+}
+
+function initApp() {
     if (!store.has('TWITTER_ACCESS_TOKEN')) {
         twitterAPIWindow()
     } else {
-        anidoroWindow()
+        otadoroWindow()
     }
+    initTray()
 }
 
-app.whenReady().then(initWindow)
+app.whenReady().then(initApp)
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -75,43 +129,5 @@ app.on('activate', () => {
     }
 })
 
-// electron.app.on('ready', function () {
-//
-//     const mainWindow = new electron.BrowserWindow({
-//         width: 800, height: 600,
-//         webPreferences: {webSecurity: false}
-//     });
-//
-//     twitter.getRequestToken(function (error, requestToken, requestTokenSecret, results) {
-//
-//         var url = twitter.getAuthUrl(requestToken);
-//         mainWindow.webContents.on('will-navigate', function (event, url) {
-//
-//             var matched;
-//
-//             if (matched = url.match(/\?oauth_token=([^&]*)&oauth_verifier=([^&]*)/)) {
-//
-//                 twitter.getAccessToken(requestToken, requestTokenSecret, matched[2], function (error, accessToken, accessTokenSecret, results) {
-//
-//                     twitter_accessToken = accessToken;
-//                     twitter_accessTokenSecret = accessTokenSecret;
-//
-//                     twitter.verifyCredentials(twitter_accessToken, twitter_accessTokenSecret, {}, function (error, data, respons) {
-//
-//                         mainWindow.loadURL('file://' + __dirname + '/html/index.html');
-//
-//                     });
-//
-//                 });
-//
-//             }
-//
-//             event.preventDefault();
-//
-//         });
-//
-//         mainWindow.loadURL(url);
-//
-//     });
-//
-// });
+
+

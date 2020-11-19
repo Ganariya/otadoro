@@ -338,6 +338,11 @@ electron-is-dev@^1.1.0:
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-1.2.0.tgz#2e5cea0a1b3ccf1c86f577cee77363ef55deb05e"
   integrity sha512-R1oD5gMBPS7PVU8gJwH6CtT0e6VSoD0+SzSnYpNm+dBkcijgA+K7VAMHDfnRq/lkKPZArpzplTW6jfiMYosdzw==
 
+electron-positioner@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/electron-positioner/-/electron-positioner-4.1.0.tgz#e158f8f6aabd6725a8a9b4f2279b9504bcbea1b0"
+  integrity sha512-726DfbI9ZNoCg+Fcu6XLuTKTnzf+6nFqv7h+K/V6Ug7IbaPMI7s9S8URnGtWFCy5N5PL4HSzRFF2mXuinftDdg==
+
 electron-reload@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/electron-reload/-/electron-reload-1.5.0.tgz#179ab1f6941fcf0ed261c37b16dc465e201348f5"
@@ -760,6 +765,13 @@ matcher@^3.0.0:
   integrity sha512-OkeDaAZ/bQCxeFAozM55PKcKU0yJMPGifLwV4Qgjitu+5MoAfSQN4lsLJeXZ1b8w0x+/Emda6MZgXS1jvsapng==
   dependencies:
     escape-string-regexp "^4.0.0"
+
+menubar@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/menubar/-/menubar-9.0.1.tgz#49d8d73ee0b515d6621d644fa96647e3dfc8ac3c"
+  integrity sha512-r4NdeG3CDb9BQ0w8WffWw2JT+Pugn22hKCb4niNuXMzK3WphY+RX2WmTPlZdIZfpNxVNKAo/mbuGfVP6LGGeJw==
+  dependencies:
+    electron-positioner "^4.1.0"
 
 mime-db@1.44.0:
   version "1.44.0"

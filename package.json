@@ -16,6 +16,7 @@
     "electron-reloader": "^1.0.1",
     "electron-store": "^6.0.1",
     "help": "^3.0.2",
+    "menubar": "^9.0.1",
     "node-twitter-api": "^1.8.0"
   }
 }
