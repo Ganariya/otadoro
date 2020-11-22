@@ -23,7 +23,6 @@ app.whenReady().then(() => {
             if (process.platform !== 'darwin') app.quit()
         }
     }
-
     const main = new Main()
 })
 

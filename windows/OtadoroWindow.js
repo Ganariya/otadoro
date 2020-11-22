@@ -3,7 +3,6 @@ const Store = require('electron-store')
 const store = new Store()
 
 module.exports = class OtadoroWindow {
-
     constructor() {
         const {screen} = require('electron')
         const {width, height} = screen.getPrimaryDisplay().workAreaSize;
@@ -20,7 +19,7 @@ module.exports = class OtadoroWindow {
             }
         })
         this.window.setIgnoreMouseEvents(true)
-        this.window.loadFile('index.html')
+        this.window.loadFile('client/index.html')
     }
 }
 
