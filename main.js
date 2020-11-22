@@ -6,24 +6,28 @@ const OtadoroWindow = require('./windows/OtadoroWindow')
 const Store = require('electron-store')
 const store = new Store()
 
-class Main {
-    constructor() {
-        app.whenReady().then(this.initWindowEvent)
-        app.on('window-all-closed', this.allClosedEvent)
+app.whenReady().then(() => {
+    class Main {
+        constructor() {
+            app.on('window-all-closed', this.allClosedEvent)
+            this.initWindowEvent()
+        }
+
+        initWindowEvent() {
+            let twitterAPIWindow, otadoroWindow;
+            if (!store.has('TWITTER_ACCESS_TOKEN')) twitterAPIWindow = new TwitterAPIWindow()
+            else otadoroWindow = new OtadoroWindow()
+        }
+
+        allClosedEvent() {
+            if (process.platform !== 'darwin') app.quit()
+        }
     }
 
-    initWindowEvent() {
-        let twitterAPIWindow, otadoroWindow;
-        if (!store.has('TWITTER_ACCESS_TOKEN')) twitterAPIWindow = new TwitterAPIWindow()
-        else otadoroWindow = new OtadoroWindow()
-    }
+    const main = new Main()
+})
 
-    allClosedEvent() {
-        if (process.platform !== 'darwin') app.quit()
-    }
-}
 
-const main = new Main()
 
 
 
