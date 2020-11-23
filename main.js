@@ -9,30 +9,22 @@ process.on('uncaughtException', (err) => {
     app.quit();
 })
 
-require('dotenv').config()
-const twitterAPI = require('node-twitter-api')
-const twitter = new twitterAPI({
-    consumerKey: process.env.TWITTER_CONSUMER_KEY,
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-    callback: 'https://www.google.co.jp/'
-})
-
 const {openTwitterAPIWindow} = require('./windows/TwitterAPIWindow')
 const {openOtadoroWindow, wakeDownOtadoroWindow, wakeUpOtadoroWindow} = require('./windows/OtadoroWindow')
 const PomodoroTimer = require('./components/PomodoroTimer')
-const OtadoroTray = require('./components/OtadoroTray')
+const {createTray} = require('./components/OtadoroTray')
 
 const Store = require('electron-store')
 const store = new Store()
 
 let pomodoroTimer = null
-let otadoroTray = null
 let main = null
 
 class Main {
     constructor() {
         app.on('window-all-closed', this.allClosedEvent)
         this.initWindowEvent()
+        createTray()
     }
 
     initWindowEvent() {
@@ -57,7 +49,6 @@ class Main {
 app.whenReady().then(() => {
     main = new Main()
     // pomodoroTimer = new PomodoroTimer(main)
-    // otadoroTray = new OtadoroTray(pomodoroTimer)
     let window = new BrowserWindow(({width: 300, height: 300}))
     window.loadURL('https://github.com')
 })

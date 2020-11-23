@@ -16,8 +16,10 @@
       "components",
       "windows",
       ".env",
-      "ganariya.png",
       "main.js"
+    ],
+    "extraResources": [
+      "./assets/**"
     ],
     "mac": {
       "target": [

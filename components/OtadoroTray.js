@@ -1,33 +1,70 @@
+const path = require('path')
 const {Menu, Tray} = require('electron')
-
-let tray = null
+const {app, BrowserWindow, Notification} = require('electron')
+const assetsPath = app.isPackaged ? path.join(process.resourcesPath, "assets") : "assets";
+let otadoroTray = null
 let contextMenu = null
-let pomodoroTimer = null
 
-module.exports = class OtadoroTray {
-    constructor(timer) {
-        pomodoroTimer = timer
-        tray = new Tray('ganariya.png')
-        contextMenu = Menu.buildFromTemplate([
-            {
-                label: 'Start',
-                click: this.callWorkStart
-            },
-            {
-                label: 'Stop',
-                click: this.callWorkStop
-            }
-        ])
-        tray.setContextMenu(contextMenu)
-        tray.setTitle('25:00')
+function showNotification (body) {
+    const notification = {
+        title: 'OtadoroTray',
+        body: body
     }
+    new Notification(notification).show()
+}
 
-    callWorkStart() {
-        pomodoroTimer.workStart()
-    }
+function createTray() {
+    otadoroTray = new Tray( path.join(assetsPath, 'ganariya.png'))
+    contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Start',
+            click: callWorkStart
+        },
+        {
+            label: 'Stop',
+            click: callWorkStop
+        }
+    ])
+    otadoroTray.setContextMenu(contextMenu)
+    otadoroTray.setTitle('25:00')
+}
 
-    callWorkStop() {
-        pomodoroTimer.workStop()
-    }
+function callWorkStart() {
 
 }
+
+function callWorkStop() {
+
+}
+
+module.exports = {
+    createTray
+}
+
+// module.exports = class OtadoroTray {
+//     constructor(timer) {
+//         pomodoroTimer = timer
+//         tray = new Tray('ganariya.png')
+//         contextMenu = Menu.buildFromTemplate([
+//             {
+//                 label: 'Start',
+//                 click: this.callWorkStart
+//             },
+//             {
+//                 label: 'Stop',
+//                 click: this.callWorkStop
+//             }
+//         ])
+//         tray.setContextMenu(contextMenu)
+//         tray.setTitle('25:00')
+//     }
+//
+//     callWorkStart() {
+//         pomodoroTimer.workStart()
+//     }
+//
+//     callWorkStop() {
+//         pomodoroTimer.workStop()
+//     }
+//
+// }
