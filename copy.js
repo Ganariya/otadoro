@@ -54,7 +54,7 @@ function startTimer() {
 }
 
 function initTray() {
-    tray = new Tray('ganariya_2.png')
+    tray = new Tray('ganariya.png')
     const contextMenu = Menu.buildFromTemplate([
         {
             label: 'Start', click: startTimer

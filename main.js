@@ -1,31 +1,43 @@
 const path = require('path')
 require('electron-reload')(__dirname, {electron: path.join(__dirname, 'node_modules', '.bin', 'electron')})
-const {app, BrowserWindow, Tray, Menu} = require('electron')
+const {app} = require('electron')
+
 const TwitterAPIWindow = require('./windows/TwitterAPIWindow')
+
 const OtadoroWindow = require('./windows/OtadoroWindow')
+const PomodoroTimer = require('./components/PomodoroTimer')
+const OtadoroTray = require('./components/OtadoroTray')
+
 const Store = require('electron-store')
 const store = new Store()
 
-app.whenReady().then(() => {
-    class Main {
-        constructor() {
-            app.on('window-all-closed', this.allClosedEvent)
-            this.initWindowEvent()
-        }
+let pomodoroTimer = null
+let otadoroTray = null
+let main = null
 
-        initWindowEvent() {
-            let twitterAPIWindow, otadoroWindow;
-            if (!store.has('TWITTER_ACCESS_TOKEN')) twitterAPIWindow = new TwitterAPIWindow()
-            else otadoroWindow = new OtadoroWindow()
-        }
-
-        allClosedEvent() {
-            if (process.platform !== 'darwin') app.quit()
-        }
+class Main {
+    constructor() {
+        app.on('window-all-closed', this.allClosedEvent)
+        this.initWindowEvent()
     }
-    const main = new Main()
-})
 
+    initWindowEvent() {
+        let twitterAPIWindow, otadoroWindow;
+        if (!store.has('TWITTER_ACCESS_TOKEN')) twitterAPIWindow = new TwitterAPIWindow()
+        else otadoroWindow = new OtadoroWindow()
+    }
+
+    allClosedEvent() {
+        if (process.platform !== 'darwin') app.quit()
+    }
+}
+
+
+app.whenReady().then(() => {
+    main = new Main()
+    pomodoroTimer = new PomodoroTimer()
+    otadoroTray = new OtadoroTray(pomodoroTimer)
+})
 
 
 
