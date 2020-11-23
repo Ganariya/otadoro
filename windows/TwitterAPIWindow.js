@@ -1,5 +1,5 @@
 require('dotenv').config()
-const {BrowserWindow, Notification} = require('electron')
+const {BrowserWindow, Notification, app} = require('electron')
 const Store = require('electron-store')
 const twitterAPI = require('node-twitter-api')
 const twitter = new twitterAPI({
@@ -9,38 +9,45 @@ const twitter = new twitterAPI({
 })
 const store = new Store();
 
+let twitterAPIWindow = null;
 
-module.exports = class TwitterAPIWindow {
-    constructor() {
-        this.window = new BrowserWindow({
-            width: 800,
-            height: 600,
-            webPreferences: {
-                nodeIntegration: true,
-                enableRemoteModule: true
-            }
-        })
-        this.getToken()
-    }
-
-    getToken() {
-        twitter.getRequestToken((error, requestToken, requestTokenSecret, results) => {
-            const url = twitter.getAuthUrl(requestToken);
-            this.window.webContents.on('will-navigate', (event, url) => {
-                const matched = url.match(/\?oauth_token=([^&]*)&oauth_verifier=([^&]*)/);
-                twitter.getAccessToken(requestToken, requestTokenSecret, matched[2], (error, accessToken, accessTokenSecret, results) => {
-                    const twitterAccessToken = accessToken;
-                    const twitterAccessTokenSecret = accessTokenSecret;
-                    twitter.verifyCredentials(twitterAccessToken, twitterAccessTokenSecret, {}, (error, data, response) => {
-                        this.window.loadURL('file://' + __dirname + '/index.html');
-                    });
-                    store.set('TWITTER_ACCESS_TOKEN', twitterAccessToken)
-                    store.set('TWITTER_ACCESS_TOKEN_SECRET', twitterAccessTokenSecret)
+function getToken() {
+    twitter.getRequestToken((error, requestToken, requestTokenSecret, results) => {
+        const url = twitter.getAuthUrl(requestToken);
+        twitterAPIWindow.webContents.on('will-navigate', (event, url) => {
+            const matched = url.match(/\?oauth_token=([^&]*)&oauth_verifier=([^&]*)/);
+            twitter.getAccessToken(requestToken, requestTokenSecret, matched[2], (error, accessToken, accessTokenSecret, results) => {
+                const twitterAccessToken = accessToken;
+                const twitterAccessTokenSecret = accessTokenSecret;
+                twitter.verifyCredentials(twitterAccessToken, twitterAccessTokenSecret, {}, (error, data, response) => {
+                    twitterAPIWindow.loadURL('file://' + __dirname + '/index.html');
                 });
-                event.preventDefault()
-            })
-            this.window.loadURL(url)
+                store.set('TWITTER_ACCESS_TOKEN', twitterAccessToken)
+                store.set('TWITTER_ACCESS_TOKEN_SECRET', twitterAccessTokenSecret)
+            });
+            event.preventDefault()
         })
-    }
+        twitterAPIWindow.loadURL(url)
+    })
+}
 
+function openTwitterAPIWindow() {
+    twitterAPIWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true
+        }
+    })
+    getToken()
+}
+
+function closeTwitterAPIWindow() {
+
+}
+
+module.exports = {
+    openTwitterAPIWindow,
+    closeTwitterAPIWindow
 }

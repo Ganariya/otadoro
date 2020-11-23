@@ -17,7 +17,7 @@ const twitter = new twitterAPI({
     callback: 'https://www.google.co.jp/'
 })
 
-const TwitterAPIWindow = require('./windows/TwitterAPIWindow')
+const {openTwitterAPIWindow} = require('./windows/TwitterAPIWindow')
 const OtadoroWindow = require('./windows/OtadoroWindow')
 const PomodoroTimer = require('./components/PomodoroTimer')
 const OtadoroTray = require('./components/OtadoroTray')
@@ -25,8 +25,6 @@ const OtadoroTray = require('./components/OtadoroTray')
 const Store = require('electron-store')
 const store = new Store()
 
-let twitterAPIWindow = null
-let otadoroWindow = null
 let pomodoroTimer = null
 let otadoroTray = null
 let main = null
@@ -38,8 +36,7 @@ class Main {
     }
 
     initWindowEvent() {
-        if (!store.has('TWITTER_ACCESS_TOKEN')) twitterAPIWindow = new TwitterAPIWindow()
-        else otadoroWindow = new OtadoroWindow()
+        openTwitterAPIWindow()
         let w = new BrowserWindow({width: 10, height:30})
         w.loadURL('https://github.com')
     }
@@ -60,8 +57,8 @@ class Main {
 
 app.whenReady().then(() => {
     main = new Main()
-    pomodoroTimer = new PomodoroTimer(main)
-    otadoroTray = new OtadoroTray(pomodoroTimer)
+    // pomodoroTimer = new PomodoroTimer(main)
+    // otadoroTray = new OtadoroTray(pomodoroTimer)
     let window = new BrowserWindow(({width: 300, height: 300}))
     window.loadURL('https://github.com')
 })
