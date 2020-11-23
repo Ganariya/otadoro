@@ -8,6 +8,15 @@ process.on('uncaughtException', (err) => {
     log.error(err.stack);
     app.quit();
 })
+
+require('dotenv').config()
+const twitterAPI = require('node-twitter-api')
+const twitter = new twitterAPI({
+    consumerKey: process.env.TWITTER_CONSUMER_KEY,
+    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+    callback: 'https://www.google.co.jp/'
+})
+
 const TwitterAPIWindow = require('./windows/TwitterAPIWindow')
 const OtadoroWindow = require('./windows/OtadoroWindow')
 const PomodoroTimer = require('./components/PomodoroTimer')
@@ -51,8 +60,8 @@ class Main {
 
 app.whenReady().then(() => {
     main = new Main()
-    // pomodoroTimer = new PomodoroTimer(main)
-    // otadoroTray = new OtadoroTray(pomodoroTimer)
+    pomodoroTimer = new PomodoroTimer(main)
+    otadoroTray = new OtadoroTray(pomodoroTimer)
     let window = new BrowserWindow(({width: 300, height: 300}))
     window.loadURL('https://github.com')
 })
