@@ -2,6 +2,7 @@ const path = require('path')
 const {Menu, Tray} = require('electron')
 const {app, BrowserWindow, Notification} = require('electron')
 const assetsPath = app.isPackaged ? path.join(process.resourcesPath, "assets") : "assets";
+
 let otadoroTray = null
 let contextMenu = null
 
@@ -14,7 +15,7 @@ function showNotification (body) {
 }
 
 function createTray() {
-    otadoroTray = new Tray( path.join(assetsPath, 'ganariya.png'))
+    otadoroTray = new Tray( path.join(assetsPath, 'risu.png'))
     contextMenu = Menu.buildFromTemplate([
         {
             label: 'Start',
