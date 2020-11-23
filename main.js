@@ -18,7 +18,7 @@ const twitter = new twitterAPI({
 })
 
 const {openTwitterAPIWindow} = require('./windows/TwitterAPIWindow')
-const OtadoroWindow = require('./windows/OtadoroWindow')
+const {openOtadoroWindow, wakeDownOtadoroWindow, wakeUpOtadoroWindow} = require('./windows/OtadoroWindow')
 const PomodoroTimer = require('./components/PomodoroTimer')
 const OtadoroTray = require('./components/OtadoroTray')
 
@@ -37,8 +37,7 @@ class Main {
 
     initWindowEvent() {
         openTwitterAPIWindow()
-        let w = new BrowserWindow({width: 10, height:30})
-        w.loadURL('https://github.com')
+        openOtadoroWindow()
     }
 
     allClosedEvent() {

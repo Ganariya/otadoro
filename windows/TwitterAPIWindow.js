@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: __dirname + '/../.env' })
 const {BrowserWindow, Notification, app} = require('electron')
 const Store = require('electron-store')
 const twitterAPI = require('node-twitter-api')
@@ -10,6 +10,7 @@ const twitter = new twitterAPI({
 const store = new Store();
 
 let twitterAPIWindow = null;
+
 
 function getToken() {
     twitter.getRequestToken((error, requestToken, requestTokenSecret, results) => {
