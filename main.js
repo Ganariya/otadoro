@@ -11,6 +11,8 @@ const OtadoroTray = require('./components/OtadoroTray')
 const Store = require('electron-store')
 const store = new Store()
 
+let twitterAPIWindow = null
+let otadoroWindow = null
 let pomodoroTimer = null
 let otadoroTray = null
 let main = null
@@ -22,7 +24,6 @@ class Main {
     }
 
     initWindowEvent() {
-        let twitterAPIWindow, otadoroWindow;
         if (!store.has('TWITTER_ACCESS_TOKEN')) twitterAPIWindow = new TwitterAPIWindow()
         else otadoroWindow = new OtadoroWindow()
     }
@@ -30,15 +31,18 @@ class Main {
     allClosedEvent() {
         if (process.platform !== 'darwin') app.quit()
     }
+
+    wakeUpOtadoroWindow() {
+        otadoroWindow.wakeUpWindow()
+    }
 }
 
 
 app.whenReady().then(() => {
     main = new Main()
-    pomodoroTimer = new PomodoroTimer()
+    pomodoroTimer = new PomodoroTimer(main)
     otadoroTray = new OtadoroTray(pomodoroTimer)
 })
-
 
 
 

@@ -5,8 +5,8 @@ let contextMenu = null
 let pomodoroTimer = null
 
 module.exports = class OtadoroTray {
-    constructor(_pomodoroTimer) {
-        pomodoroTimer = _pomodoroTimer
+    constructor(timer) {
+        pomodoroTimer = timer
         tray = new Tray('ganariya.png')
         contextMenu = Menu.buildFromTemplate([
             {
