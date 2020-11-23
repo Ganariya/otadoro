@@ -5,18 +5,42 @@
   "scripts": {
     "start": "electron ."
   },
+  "build": {
+    "productName": "otadoro",
+    "appId": "com.ganariya.otadoro",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "client",
+      "components",
+      "windows",
+      ".env",
+      "ganariya.png",
+      "main.js"
+    ],
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    }
+  },
   "repository": "https://github.com/Ganariya/otadoro.git",
   "author": "ganariya <willwill1997willwill@yahoo.co.jp>",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "electron": "^11.0.2",
     "electron-better-ipc": "^1.1.1",
+    "electron-log": "^4.3.0",
     "electron-reload": "^1.5.0",
     "electron-reloader": "^1.0.1",
     "electron-store": "^6.0.1",
     "help": "^3.0.2",
     "menubar": "^9.0.1",
     "node-twitter-api": "^1.8.0"
+  },
+  "devDependencies": {
+    "electron": "^11.0.2",
+    "electron-builder": "^22.9.1"
   }
 }

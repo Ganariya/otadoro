@@ -13,7 +13,6 @@ module.exports = class PomodoroTimer {
     }
 
     workStart() {
-        console.log(this)
         this.remainSeconds = MINUTES_OF_ONE_POMODORO * 60
         this.remainSeconds = 10
         this.id = setInterval(() => {
@@ -26,11 +25,29 @@ module.exports = class PomodoroTimer {
         clearInterval(this.id)
         this.tomato += 1
         main.wakeUpOtadoroWindow()
+        this.breakStart()
     }
 
     workStop() {
         clearInterval(this.id)
     }
+
+    breakStart() {
+        this.remainSeconds = MINUTES_OF_ONE_SHORT_BREAK * 60
+        this.id = setInterval(() => {
+            this.remainSeconds -= 1
+            if (this.remainSeconds < 0) this.breakFinish()
+        }, 1000);
+    }
+
+    breakFinish() {
+        clearInterval(this.id)
+    }
+
+    breakStop() {
+
+    }
+
 
     static get minutesOfOnePomodoro() {
         return MINUTES_OF_ONE_POMODORO

@@ -1,5 +1,5 @@
 require('dotenv').config()
-const {BrowserWindow} = require('electron')
+const {BrowserWindow, Notification} = require('electron')
 const Store = require('electron-store')
 const twitterAPI = require('node-twitter-api')
 const twitter = new twitterAPI({
@@ -8,6 +8,7 @@ const twitter = new twitterAPI({
     callback: 'https://www.google.co.jp/'
 })
 const store = new Store();
+
 
 module.exports = class TwitterAPIWindow {
     constructor() {

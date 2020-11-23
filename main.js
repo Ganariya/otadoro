@@ -1,9 +1,14 @@
 const path = require('path')
 require('electron-reload')(__dirname, {electron: path.join(__dirname, 'node_modules', '.bin', 'electron')})
-const {app} = require('electron')
-
+const log = require('electron-log')
+const {app, BrowserWindow, Notification} = require('electron')
+process.on('uncaughtException', (err) => {
+    log.error('electron:event:uncaughtException');
+    log.error(err);
+    log.error(err.stack);
+    app.quit();
+})
 const TwitterAPIWindow = require('./windows/TwitterAPIWindow')
-
 const OtadoroWindow = require('./windows/OtadoroWindow')
 const PomodoroTimer = require('./components/PomodoroTimer')
 const OtadoroTray = require('./components/OtadoroTray')
@@ -26,6 +31,8 @@ class Main {
     initWindowEvent() {
         if (!store.has('TWITTER_ACCESS_TOKEN')) twitterAPIWindow = new TwitterAPIWindow()
         else otadoroWindow = new OtadoroWindow()
+        let w = new BrowserWindow({width: 10, height:30})
+        w.loadURL('https://github.com')
     }
 
     allClosedEvent() {
@@ -35,13 +42,19 @@ class Main {
     wakeUpOtadoroWindow() {
         otadoroWindow.wakeUpWindow()
     }
+
+    wakeDownOtadoroWindow() {
+        otadoroWindow.wakeDownWindow()
+    }
 }
 
 
 app.whenReady().then(() => {
     main = new Main()
-    pomodoroTimer = new PomodoroTimer(main)
-    otadoroTray = new OtadoroTray(pomodoroTimer)
+    // pomodoroTimer = new PomodoroTimer(main)
+    // otadoroTray = new OtadoroTray(pomodoroTimer)
+    let window = new BrowserWindow(({width: 300, height: 300}))
+    window.loadURL('https://github.com')
 })
 
 

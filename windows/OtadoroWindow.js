@@ -1,10 +1,14 @@
-const {BrowserWindow, ipcMain: ipc} = require('electron')
+const {BrowserWindow, ipcMain: ipc, Notification} = require('electron')
 const Store = require('electron-store')
 const store = new Store()
 
-ipc.on('hello', (event, moji) => {
-    console.log(moji)
-})
+function showNotification(title) {
+    const notification = {
+        title: title,
+    }
+    new Notification(notification).show()
+}
+
 
 module.exports = class OtadoroWindow {
     constructor() {
@@ -24,10 +28,25 @@ module.exports = class OtadoroWindow {
         })
         this.window.setIgnoreMouseEvents(true)
         this.window.loadFile('client/index.html')
+        this.window.hide()
+        this.registerEvent()
+    }
+
+    registerEvent() {
+        ipc.on('wakeup', (event, moji) => {
+            this.window.show()
+        })
+        ipc.on('wakedown', (event, moji) => {
+            this.window.hide()
+        })
     }
 
     wakeUpWindow() {
-        console.log(10)
+        this.window.show()
+    }
+
+    wakeDownWindow(){
+        this.window.hide()
     }
 
 }
